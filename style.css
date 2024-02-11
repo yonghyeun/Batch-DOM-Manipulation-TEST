@@ -1,0 +1,14 @@
+* {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  height: 100vh;
+}
+
+.cat {
+  position: absolute;
+  width: 100px;
+  border-radius: 50%;
+}
