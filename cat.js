@@ -53,7 +53,7 @@ export default class Cat {
   /**
    *
    * @param {boolean} isCaching - Indicates whether to use cached location values
-   * @returns {Object} - infromation of the node.
+   * @returns {Object} - infromation of the location of the node.
    * @property {number} curTop - The current top position of the node.
    * @property {number} curTranslateY - The current translateY value of the node.
    * @property {number} curLocation - The current calculated location of the node
@@ -68,7 +68,7 @@ export default class Cat {
     return {
       curTop: node.offsetTop,
       curTranslateY: amountTranslate,
-      curLocation: node.offsetTop - amountTranslate,
+      curLocation: node.offsetTop + amountTranslate,
     };
   };
   /**
@@ -79,17 +79,16 @@ export default class Cat {
    * @param {boolean} isCaching - Indicates whether caching for animation if enabled.
    * @returns {number} - Indicates the distance the node will move next.
    */
-  calcaulateOffset = (isCaching) => {
-    const { node, maxHeight, imgSize } = this;
+  calcaulateOffset = (isGoingUp, isCaching) => {
+    const { maxHeight, imgSize } = this;
     const { getLocation } = this;
     const { curLocation } = getLocation(isCaching);
-    const isGoingUp = node.classList.contains('up');
     const offset = isGoingUp ? -3 : 3;
     const nextLocation = curLocation + offset;
 
     if (isGoingUp && nextLocation <= 0) return -curLocation;
     if (!isGoingUp && nextLocation >= maxHeight - imgSize)
-      return maxHeight - curLocation;
+      return maxHeight - imgSize - curLocation;
 
     return offset;
   };
@@ -114,13 +113,42 @@ export default class Cat {
     }
   };
 
+  /**
+   *
+   * @param {Object} newData - The Object used to update the caching.
+   */
   updateCache = (newData) => {
     this.caching = { ...this.caching, ...newData };
   };
 
+  /**
+   * This function makes the node movable within the viewport.
+   * This calculates the offset indicating next step using calculateOffset function ,
+   * changes the style of node depending on isTranslate.
+   * and this function updates caching data if isCaching is true
+   * @param {Object} optimizeState
+   * @property {boolean} isCaching - Indicates whether to use cached location values
+   * @property {boolean} isTranslate - Indicates whether to use translateY or not
+   */
   move(optimizeState) {
     const { isCaching, isTranslate } = optimizeState;
-    const { calcaulateOffset, changeState, updateCache } = this;
-    const offset = calcaulateOffset(isCaching);
+    const { node } = this;
+    const { getLocation, calcaulateOffset, changeState, updateCache } = this;
+    const isGoingUp = node.classList.contains('up');
+    let { curTop, curTranslateY, curLocation } = getLocation(isCaching);
+    const offset = calcaulateOffset(isGoingUp, isCaching);
+    const nextLocation = curLocation + offset;
+
+    if (isTranslate) {
+      node.style.transform = `translateY(${curTranslateY + offset}px)`;
+      curTranslateY += offset;
+    } else {
+      node.style.top = `${curTop + offset}px`;
+      curTop += offset;
+    }
+    curLocation += offset;
+
+    if (isCaching) updateCache({ curTop, curTranslateY, curLocation });
+    changeState(isGoingUp, nextLocation);
   }
 }
