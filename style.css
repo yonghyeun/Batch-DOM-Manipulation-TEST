@@ -5,10 +5,11 @@
 
 body {
   height: 100vh;
+  overflow: hidden;
 }
 
 .cat {
   position: absolute;
-  width: 100px;
+  width: 50px;
   border-radius: 50%;
 }

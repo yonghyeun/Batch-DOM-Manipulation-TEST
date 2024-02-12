@@ -2,7 +2,7 @@ import Cat from './cat.js';
 
 const $body = document.querySelector('body');
 const maxWidth = $body.clientWidth;
-const maxCats = 150;
+const maxCats = 1;
 
 const cats = [];
 for (let index = 0; index < maxCats; index += 1) {
@@ -11,7 +11,7 @@ for (let index = 0; index < maxCats; index += 1) {
 }
 
 const catMoving = () => {
-  cats.forEach((cat) => cat.move({ isCaching: true, isTranslate: false }));
+  cats.forEach((cat) => cat.move({ isCaching: false, isTranslate: true }));
   /* 다음날 일어나면 isCaching : false 이고 isTrnaslate : true 일 때 수정해놔라 */
   requestAnimationFrame(catMoving);
 };

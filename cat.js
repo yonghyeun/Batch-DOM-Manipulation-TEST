@@ -2,8 +2,7 @@ export default class Cat {
   constructor(locationX) {
     this.body = document.querySelector('body');
     this.maxHeight = document.querySelector('body').clientHeight;
-    this.imgSize = 100;
-    this.caching = {};
+    this.imgSize = 50;
     this.createCat(locationX);
     this.render();
   }
@@ -16,11 +15,9 @@ export default class Cat {
 
     node.src = 'cat.gif';
     node.className = `cat ${movingState}`;
-    node.style.cssText = `left: ${locationX}px; top: ${locationY}px;`;
+    node.style.cssText = `left: ${locationX}px; top: ${locationY}px; transform : translateY(0px);`;
 
-    caching.curTop = locationY;
-    caching.curBottom = locationY + imgSize;
-
+    this.locationCached = locationY;
     this.node = node;
   }
 
@@ -29,11 +26,36 @@ export default class Cat {
     body.appendChild(node);
   }
 
-  getLocation = (isCaching) => {
-    const { node, imgSize, caching } = this;
+  translateParsing = () => {
+    const { node } = this;
+    const translateText = node.style.transform;
+    const pxLocation = translateText.indexOf('px');
 
-    if (isCaching) return caching;
-    return { curTop: node.offsetTop, curBottom: node.offsetTop + imgSize };
+    return translateText.slice(11, pxLocation);
+  };
+
+  getLocation = (isCaching) => {
+    const { node, locationCached } = this;
+    const { translateParsing } = this;
+    const amountTranslate = translateParsing();
+
+    if (isCaching) return locationCached;
+    return node.offsetTop + amountTranslate;
+  };
+
+  correctLocation = (isGoingUp, isCaching) => {
+    const { maxHeight, imgSize } = this;
+    const { getLocation } = this;
+    const distance = isGoingUp ? -3 : 3;
+    const { curTop } = getLocation(isCaching);
+    let nextLocation = curTop + distance;
+
+    if (isGoingUp) {
+      nextLocation = Math.max(nextLocation, 0);
+    } else {
+      nextLocation = Math.min(nextLocation, maxHeight - imgSize);
+    }
+    return nextLocation;
   };
 
   changeState = (isGoingUp, nextLocation) => {
@@ -55,30 +77,7 @@ export default class Cat {
   };
 
   move(optimizeState) {
-    const { node, maxHeight, imgSize, caching } = this;
-    const { getLocation, changeState, updateCache } = this;
     const { isCaching, isTranslate } = optimizeState;
-    const { curTop, curBottom } = getLocation(isCaching);
-    const isGoingUp = node.classList.contains('up');
-    const distance = isGoingUp ? -3 : 3;
-    let nextLocation = curTop + distance;
-
-    /* 뷰포트를 뚫고 나가는지 확인 후 다음 위치 보정 */
-    if (isGoingUp) {
-      nextLocation = Math.max(nextLocation, 0);
-    } else {
-      nextLocation = Math.min(nextLocation, maxHeight - imgSize);
-    }
-    /* method에 따라 reflow 혹은 repaint 시키기 */
-    if (isTranslate) {
-      /* translateY 의 인수는 다음에 위치할 곳 - 현재의 top px */
-      const styleTop = node.style.top.slice(0, -2);
-      node.style.transform = `translateY(${nextLocation - styleTop}px)`;
-    } else node.style.top = `${nextLocation}px`;
-    /* caching 하기 */
-    updateCache(nextLocation);
-
-    /* class 이름을 바꿔야 하는지 확인 후 변경 */
-    changeState(isGoingUp, nextLocation);
+    this.getLocation(isCaching);
   }
 }
