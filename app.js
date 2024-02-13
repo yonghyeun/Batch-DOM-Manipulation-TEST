@@ -8,10 +8,12 @@ export default class App {
     this.body = document.querySelector('body');
     this.root = document.querySelector('#root');
     this.delta = 10;
+    this.timer = null;
     this.init();
     this.setUp();
     this.render();
   }
+
   /**
    * This function creates component's initial state.
    */
@@ -93,12 +95,11 @@ export default class App {
    * @returns {Function} - A debounced version of the input function
    */
   debounce = (callbackFn, delay = 500) => {
-    let timer;
-
     return (...args) => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
+      if (this.timer) clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
         callbackFn(...args);
+        this.timer = null;
       }, delay);
     };
   };

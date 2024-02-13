@@ -1,3 +1,5 @@
+### issue 1. top , translate 간의 공유 불가능
+
 각 node 의 method 에 따라서 위치 보정을 다르게 해야함
 
 그 이유는
@@ -21,3 +23,109 @@ caching 은 top + translateY 값을 이용해 실제 노드의 curTop 을 계산
 어차피 top , translateY 값을 변경하는 것은 distnace 만큼 +- 시키면 되는거 아니냐 ?
 
 어차피 이동하는 distance 는 class 에 따라 상관있는거니까 말이야
+
+# issue 2. debouncing 구현 중 어려움 봉착
+
+## 문제 정의
+
+```js
+
+  /**
+   * This function manages component's state.
+   * If states were changed, It occurs re-rendering using changed state.
+   * @param {object} newState - The new state to be merged with the current state.
+   */
+  setState(newState) {
+    this.state = { ...this.state, ...newState };
+    this.render();
+  }
+  ...
+
+  /**
+   * Creates a debounced version of a function ,
+   * delaying its excution untill after a certain time period has elapsed since the last call.
+   * @param {Function} callbackFn - The function to debounce.
+   * @param {Number} delay - The delay in milliseconds before the debounced function is called after the last invocation.
+   * @returns {Function} - A debounced version of the input function
+   */
+  debounce = (callbackFn, delay = 500) => {
+    let timer;
+
+    return (...args) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        callbackFn(...args);
+        timer = null;
+      }, delay);
+    };
+  };
+
+  /**
+   * This function render all Components on browser using debouncing.
+   * Using debounce seperates state changes and rendering.
+   */
+  render() {
+    this.debounce(console.log)(this.state);
+  }
+```
+
+`render` 메소드가 호출 될 때 디바운싱을 이용하여 렌더링 하고자 했다. `state` 를 업데이트 할 때 마다 렌더링을 하는 것 보다
+
+`state` 업데이트는 즉각적으로 일어나면서 렌더링은 `debouncing` 을 이용하여 마지막 `state` 변경 때에만 렌더링을 일으키려고 말이다.
+
+`debouncing` 함수 자체는 문제가 없는 것으로 확인되는데 `render()` 메소드가 호출 될 때 마다
+
+`debouncing` 기능이 작동을 안하고 비동기적으로 쌓인 이벤트들이 호출되는 모습을 볼 수 있었다.
+
+![!before timer](/imgs/before%20timer.gif)
+
+> 예를 들어 `render()` 메소드가 5번 호출되면 마지막 이벤트가 1번만 호출되기를 기대하였으나
+> 5번 모두 호출된다.
+
+왜 이런일이 발생했을까 ?
+
+```js
+  render() {
+    this.debounce(console.log)(this.state);
+  }
+```
+
+해당 메소드가 `setState` 에서 호출 될 때 `this.debounce()` 로 생성되는 함수 객체는
+
+매 호출때마다 서로 다른 `timer` 지역 변수들을 가리키고 있기 때문이다.
+
+> 호출 될 때 마다 실행 컨텍스트가 서로 다르며, 각기 다른 실행 컨텍스트에서 지역변수인 `timer` 가 존재하니 각자의 `timer` 를 공유하지 않고 있다.
+
+그래서 `timer` 를 지역 변수가 아닌 전역 변수로 변경해주었다.
+
+```js
+  constructor() {
+    this.body = document.querySelector('body');
+    this.root = document.querySelector('#root');
+    this.delta = 10;
+    this.timer = null; // timer를 전역 변수로 생성
+    this.init();
+    this.setUp();
+    this.render();
+  }
+  ...
+  debounce = (callbackFn, delay = 500) => {
+    // debounce 실행 컨텍스트에서 전역으로 관리되는 timer를 참조하도록 함
+    // 각기 다른 실행 컨텍스트에서 실행되는 debounce 메소드에서
+    // timer 는 모두 같은 timer 를 참조하게 됨
+    console.log(this.timer);
+    return (...args) => {
+      if (this.timer) clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        callbackFn(...args);
+        this.timer = null;
+      }, delay);
+    };
+  };
+
+  render() {
+    this.debounce(console.log)(this.state);
+  }
+```
+
+![!after timer](imgs/after%20timer.gif)
