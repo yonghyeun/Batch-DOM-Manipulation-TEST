@@ -21,7 +21,7 @@ export default class App {
   setUp() {
     this.state = {
       maxWidth: this.root.clientWidth,
-      numCats: 10,
+      numCats: 1,
       isCaching: true,
       isTranslate: true,
       backgroundColor: '#f2cb05',

@@ -148,7 +148,7 @@ export default class Cat {
     }
     curLocation += offset;
 
-    if (isCaching) updateCache({ curTop, curTranslateY, curLocation });
+    updateCache({ curTop, curTranslateY, curLocation });
     changeState(isGoingUp, nextLocation);
   };
 }
