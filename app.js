@@ -138,16 +138,13 @@ export default class App {
 
   /**
    * This function excutes requestAnimationFrame with recurrsion.
+   * change backgroundColor depending on the  currently pressed buttton.
    * @constant catMoving - Callback function that uses requestAnimationFrame , causing recurssion.
    */
   animation = () => {
     const { isCaching, isTranslate, backgroundColor } = this.state;
     this.root.style.backgroundColor = backgroundColor;
-
-    const catMoving = () => {
-      this.cats.forEach((cat) => cat.move({ isCaching, isTranslate }));
-    };
-    catMoving();
+    this.cats.forEach((cat) => cat.move({ isCaching, isTranslate }));
 
     if (this.frame) cancelAnimationFrame(this.frame);
     this.frame = requestAnimationFrame(this.animation);
