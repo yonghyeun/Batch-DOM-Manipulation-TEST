@@ -33,7 +33,9 @@ export default class App {
    */
   setState(newState) {
     this.state = { ...this.state, ...newState };
-    this.render();
+
+    if (newState.maxWidth || newState.numCats) this.render();
+    else this.somethingFunc(); /** @todos else 지우기 나중에 */
   }
 
   /**
@@ -113,8 +115,23 @@ export default class App {
   /**
    * This function render all Components on browser using debouncing.
    * Using debounce seperates state changes and rendering.
+   * @constant callbackFn - callback Function will be debounced function.
+   * @constant interval - interval between adjacent cats depending on maxWidth and numCats.
    */
   render() {
-    this.debounce(console.log)(this.state);
+    const callbackFn = () => {
+      const { numCats, maxWidth } = this.state;
+      const interval = maxWidth / numCats;
+      this.root.innerHTML = '';
+      this.cats = [];
+      for (let index = 0; index < numCats; index += 1) {
+        const locationX = interval * index + Math.random() * 10;
+        this.cats[index] = new Cat(locationX);
+      }
+    };
+
+    this.debounce(callbackFn)();
   }
+
+  animation() {}
 }

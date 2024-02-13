@@ -130,7 +130,7 @@ export default class Cat {
    * @property {boolean} isCaching - Indicates whether to use cached location values
    * @property {boolean} isTranslate - Indicates whether to use translateY or not
    */
-  move(optimizeState) {
+  move = (optimizeState) => {
     const { isCaching, isTranslate } = optimizeState;
     const { node } = this;
     const { getLocation, calcaulateOffset, changeState, updateCache } = this;
@@ -150,5 +150,5 @@ export default class Cat {
 
     if (isCaching) updateCache({ curTop, curTranslateY, curLocation });
     changeState(isGoingUp, nextLocation);
-  }
+  };
 }
