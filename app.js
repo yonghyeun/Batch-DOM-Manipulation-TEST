@@ -6,7 +6,6 @@ import Cat from './cat.js';
 export default class App {
   constructor() {
     this.body = document.querySelector('body');
-    this.root = document.querySelector('#root');
     this.delta = 10;
     this.timer = null;
     this.init();
@@ -19,7 +18,7 @@ export default class App {
    */
   setUp() {
     this.state = {
-      maxWidth: this.body.clientWidth,
+      maxWidth: this.root.clientWidth,
       numCats: 10,
       isCaching: true,
       isTranslate: true,
@@ -43,6 +42,7 @@ export default class App {
    */
   init() {
     this.body.innerHTML = `
+    <div id = 'root'></div>
     <div class="button-wrapper">
     <button class="add">add ${this.delta}</button>
     <button class="subtract">subtract ${this.delta}</button>
@@ -52,6 +52,7 @@ export default class App {
     <button class="caching translate" style = "background-color: #f2cb05;">Caching translate</button>
   </div>
   `;
+    this.root = document.querySelector('#root');
     this.mounted();
   }
 
@@ -88,7 +89,7 @@ export default class App {
     });
 
     window.addEventListener('resize', () => {
-      this.setState({ maxWidth: this.body.clientWidth });
+      this.setState({ maxWidth: this.root.clientWidth });
     });
   }
 
@@ -115,5 +116,8 @@ export default class App {
    */
   render() {
     this.debounce(console.log)(this.state);
+    // state 에 따라 Cats 컴포넌트 렌더링 하기
+    // Cats 컴포넌트 requestAnimationFrame 이용해서 시작하기
+    // state가 변경되면
   }
 }
