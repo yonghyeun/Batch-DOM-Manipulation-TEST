@@ -102,7 +102,7 @@ export default class App {
    * @param {Number} delay - The delay in milliseconds before the debounced function is called after the last invocation.
    * @returns {Function} - A debounced version of the input function
    */
-  debounce = (callbackFn, delay = 500) => {
+  debounce = (callbackFn, delay = 100) => {
     return (...args) => {
       if (this.timer) clearTimeout(this.timer);
       this.timer = setTimeout(() => {
@@ -131,7 +131,11 @@ export default class App {
     };
 
     this.debounce(callbackFn)();
+    this.animation();
   }
 
-  animation() {}
+  animation = () => {
+    const { isCaching, isTranslate, backgroundColor } = this.state;
+    this.root.style.backgroundColor = backgroundColor;
+  };
 }
