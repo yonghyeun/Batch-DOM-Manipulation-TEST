@@ -1,7 +1,7 @@
 export default class Cat {
   constructor(locationX) {
-    this.body = document.querySelector('body');
-    this.maxHeight = document.querySelector('body').clientHeight;
+    this.root = document.querySelector('#root');
+    this.maxHeight = document.querySelector('#root').clientHeight;
     this.imgSize = 50;
     this.caching = {};
     this.createCat(locationX);
@@ -32,8 +32,8 @@ export default class Cat {
   }
 
   render() {
-    const { node, body } = this;
-    body.appendChild(node);
+    const { node, root } = this;
+    root.appendChild(node);
   }
 
   /**

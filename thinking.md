@@ -129,3 +129,26 @@ caching 은 top + translateY 값을 이용해 실제 노드의 curTop 을 계산
 ```
 
 ![!after timer](imgs/after%20timer.gif)
+
+# issue3. Re-rendering 의 조건을 어떻게 할 것인가
+
+```js
+this.state = {
+  maxWidth: this.body.clientWidth,
+  numCats: 10,
+  isCaching: true,
+  isTranslate: true,
+  backgroundColor: '#f2cb05',
+};
+```
+
+관리하는 상태는 다음과 같고 만약 `state` 가 변경되면 리렌더링이 되도록 하고 있음
+
+그런데 내 생각 `backgroundColor , isCaching  , isTranslate` 상태가 변경되는 것은 모두 새롭게 리렌더링 하고 싶지 않음
+
+이미 움직이고 있는 고양이들에서 `requestAnimationFrame` 의 기존 `frame` 만 변경하고
+
+새롭게 설정된 `isCaching , isTranslate` 메소드를 이용한 `requestAnimationFrame` 을 새로 설정하면 되는거 아닌가 ?
+
+- `maxWidth , numCats` 가 변경 됐을 경우엔 전체 컴포넌트들을 지우고 새로운 컴포넌트들을 추가해주도록 하자
+- `isCaching , isTranslate , backgroundColor` 만 변경됐을 경우엔 기존 컴포넌트들은 유지한 채로 `background-color` 만 `repaint` 시키고 `requestAnimationFrame` 을 업데이트 하자
