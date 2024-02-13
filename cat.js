@@ -20,7 +20,7 @@ export default class Cat {
     const node = document.createElement('img');
     const locationY = Math.max(Math.random() * maxHeight - imgSize, 0);
 
-    node.src = '/imgs/cat.gif';
+    node.src = 'imgs/cat.gif';
     node.className = `cat ${movingState}`;
     node.style.cssText = `left: ${locationX}px; top: ${locationY}px; transform : translateY(0px);`;
 
