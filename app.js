@@ -8,6 +8,8 @@ export default class App {
     this.body = document.querySelector('body');
     this.delta = 10;
     this.timer = null;
+    this.cats = [];
+    this.frame = undefined;
     this.init();
     this.setUp();
     this.render();
@@ -35,7 +37,7 @@ export default class App {
     this.state = { ...this.state, ...newState };
 
     if (newState.maxWidth || newState.numCats) this.render();
-    else this.somethingFunc(); /** @todos else 지우기 나중에 */
+    else this.animation();
   }
 
   /**
@@ -115,6 +117,7 @@ export default class App {
   /**
    * This function render all Components on browser using debouncing.
    * Using debounce seperates state changes and rendering.
+   * Excuting the animation method stimulates the rendering of all components.
    * @constant callbackFn - callback Function will be debounced function.
    * @constant interval - interval between adjacent cats depending on maxWidth and numCats.
    */
@@ -123,7 +126,6 @@ export default class App {
       const { numCats, maxWidth } = this.state;
       const interval = maxWidth / numCats;
       this.root.innerHTML = '';
-      this.cats = [];
       for (let index = 0; index < numCats; index += 1) {
         const locationX = interval * index + Math.random() * 10;
         this.cats[index] = new Cat(locationX);
@@ -134,8 +136,20 @@ export default class App {
     this.animation();
   }
 
+  /**
+   * This function excutes requestAnimationFrame with recurrsion.
+   * @constant catMoving - Callback function that uses requestAnimationFrame , causing recurssion.
+   */
   animation = () => {
     const { isCaching, isTranslate, backgroundColor } = this.state;
     this.root.style.backgroundColor = backgroundColor;
+
+    const catMoving = () => {
+      this.cats.forEach((cat) => cat.move({ isCaching, isTranslate }));
+    };
+    catMoving();
+
+    if (this.frame) cancelAnimationFrame(this.frame);
+    this.frame = requestAnimationFrame(this.animation);
   };
 }
