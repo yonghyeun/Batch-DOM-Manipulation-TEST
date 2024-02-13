@@ -1,4 +1,4 @@
-### issue 1. top , translate 간의 공유 불가능
+# issue 1. top , translate 간의 공유 불가능
 
 각 node 의 method 에 따라서 위치 보정을 다르게 해야함
 
@@ -22,7 +22,7 @@ caching 은 top + translateY 값을 이용해 실제 노드의 curTop 을 계산
 
 어차피 top , translateY 값을 변경하는 것은 distnace 만큼 +- 시키면 되는거 아니냐 ?
 
-어차피 이동하는 distance 는 class 에 따라 상관있는거니까 말이야
+어차피 이동하는 distance 는 className 에 따라 상관있는거니까 말이야
 
 # issue 2. debouncing 구현 중 어려움 봉착
 

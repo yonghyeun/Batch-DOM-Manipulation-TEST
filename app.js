@@ -19,6 +19,7 @@ export default class App {
    */
   setUp() {
     this.state = {
+      maxWidth: this.body.clientWidth,
       numCats: 10,
       isCaching: true,
       isTranslate: true,
@@ -56,7 +57,7 @@ export default class App {
 
   /**
    * This function is excuted after excuted init method,
-   * It sets up event listeners for buttons.
+   * It sets up event listeners for buttons and window.
    * @constant addButton - Increase numCats by delta
    * @constant subButton - Decrease numCats by delta,Deactivated when numCats becomes 10 or less.
    * @constant activateButtons - Array containing all buttons except add , substract button
@@ -84,6 +85,10 @@ export default class App {
         const isTranslate = target.classList.contains('translate');
         this.setState({ backgroundColor, isCaching, isTranslate });
       });
+    });
+
+    window.addEventListener('resize', () => {
+      this.setState({ maxWidth: this.body.clientWidth });
     });
   }
 
