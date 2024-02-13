@@ -21,7 +21,7 @@ export default class App {
   setUp() {
     this.state = {
       maxWidth: this.root.clientWidth,
-      numCats: 1,
+      numCats: 10,
       isCaching: true,
       isTranslate: true,
       backgroundColor: '#f2cb05',
@@ -48,8 +48,8 @@ export default class App {
     this.body.innerHTML = `
     <div id = 'root'></div>
     <div class="button-wrapper">
-    <button class="add">add ${this.delta}</button>
-    <button class="subtract">subtract ${this.delta}</button>
+    <button class="add">add ${this.delta} Cats</button>
+    <button class="subtract">subtract ${this.delta} Cats</button>
     <button class="uncaching notransalte" style = "background-color : #f2529d;">Un-caching top</button>
     <button class="caching notranslate" style = "background-color: #a99cd9;">Caching top</button>
     <button class="uncaching translate" style = "background-color: #05f2f2;">Un-caching translate</button>
