@@ -114,7 +114,7 @@ export default class Cat {
   };
 
   /**
-   *
+   * This function update the caching data using Object spread syntax
    * @param {Object} newData - The Object used to update the caching.
    */
   updateCache = (newData) => {

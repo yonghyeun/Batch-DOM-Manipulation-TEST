@@ -4,13 +4,31 @@
   user-select: none;
 }
 
-body {
+#root {
   height: 100vh;
   overflow: hidden;
+  background-color: #05f2f2;
 }
 
 .cat {
   position: absolute;
   width: 50px;
   border-radius: 50%;
+}
+
+.button-wrapper {
+  position: absolute;
+  top: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px;
+  z-index: 999;
+}
+
+button {
+  padding: 10px;
+  font-size: 30px;
+  border: 10px solid white;
+  border-radius: 20vh;
 }
