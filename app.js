@@ -116,8 +116,5 @@ export default class App {
    */
   render() {
     this.debounce(console.log)(this.state);
-    // state 에 따라 Cats 컴포넌트 렌더링 하기
-    // Cats 컴포넌트 requestAnimationFrame 이용해서 시작하기
-    // state가 변경되면
   }
 }
