@@ -152,3 +152,9 @@ this.state = {
 
 - `maxWidth , numCats` 가 변경 됐을 경우엔 전체 컴포넌트들을 지우고 새로운 컴포넌트들을 추가해주도록 하자
 - `isCaching , isTranslate , backgroundColor` 만 변경됐을 경우엔 기존 컴포넌트들은 유지한 채로 `background-color` 만 `repaint` 시키고 `requestAnimationFrame` 을 업데이트 하자
+
+# Issue 3. caching 이 제대로 안되고 있다.
+
+`uncaching` 을 이용한 메소드를 이용하다가
+
+`caching` 메소드를 사용하니까 `caching.curLocation` 부분이 이상해지는 문제가 발생한다.
