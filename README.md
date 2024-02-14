@@ -1,3 +1,5 @@
+<img src = 'https://github.com/yonghyeun/Reflow-test/blob/main/imgs/result.gif?raw=true' alt = 'result'>
+
 ```
 Reflow-test
 ├─ .vscode
